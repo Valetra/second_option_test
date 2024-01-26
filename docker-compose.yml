@@ -1,0 +1,20 @@
+services:
+  new_database:
+    image: postgres:alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=new_database
+      - POSTGRES_USER=new_database_user
+      - POSTGRES_PASSWORD=new_database_pass
+    ports:
+      - "5511:5432"
+    volumes:
+      - new-database:/var/lib/postgresql/data
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  new-database:
+    driver: local
