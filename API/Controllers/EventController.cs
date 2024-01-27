@@ -8,6 +8,12 @@ namespace Controllers;
 [ApiController]
 public class EventController(IEventService eventService, IMapper mapper) : ControllerBase
 {
+    [HttpGet("Events")]
+    public async Task<ActionResult<List<ResponseObjects.ValuesAtMinute>>> GetEventsInRange([FromQuery] RequestObjects.GetEventsInRangeParameters parameters)
+    {
+
+    }
+
     [HttpPost("Event")]
     public async Task<ActionResult> CreateEvent(RequestObjects.Event action)
     {
