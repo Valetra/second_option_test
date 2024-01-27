@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(EventContext))]
-    [Migration("20240127121813_Init")]
+    [Migration("20240127141610_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -42,6 +42,8 @@ namespace API.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreateDateTime");
 
                     b.ToTable("Events");
                 });

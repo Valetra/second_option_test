@@ -40,6 +40,8 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreateDateTime");
+
                     b.ToTable("Events");
                 });
 #pragma warning restore 612, 618

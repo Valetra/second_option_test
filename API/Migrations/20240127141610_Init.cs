@@ -24,6 +24,11 @@ namespace API.Migrations
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_CreateDateTime",
+                table: "Events",
+                column: "CreateDateTime");
         }
 
         /// <inheritdoc />
