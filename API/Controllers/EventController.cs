@@ -15,9 +15,9 @@ public class EventController(IEventService eventService, IMapper mapper) : Contr
     }
 
     [HttpPost("Event")]
-    public async Task<ActionResult> CreateEvent(RequestObjects.Event action)
+    public async Task<ActionResult> CreateEvent(RequestObjects.Event @event)
     {
-        await eventService.Create(mapper.Map<DAL.Models.Event>(action));
+        await eventService.Create(mapper.Map<DAL.Models.Event>(@event));
 
         return Ok();
     }

@@ -4,5 +4,5 @@ namespace Services;
 
 public interface IEventService
 {
-    Task<Event> Create(Event action);
+    Task<Event> Create(Event @event);
 }
