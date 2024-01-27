@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Models;
 
+[Index(nameof(CreateDateTime))]
 public class Event : BaseModel<Guid>
 {
     public string Name { get; set; } = "";
