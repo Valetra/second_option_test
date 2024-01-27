@@ -9,9 +9,13 @@ namespace Controllers;
 public class EventController(IEventService eventService, IMapper mapper) : ControllerBase
 {
     [HttpGet("Events")]
-    public async Task<ActionResult<List<ResponseObjects.ValuesAtMinute>>> GetEventsInRange([FromQuery] RequestObjects.GetEventsInRangeParameters parameters)
+    public async Task<ActionResult<List<ResponseObjects.ValuesAtMinute>>> GetValuesAtMinutes([FromQuery] RequestObjects.GetEventsInRangeParameters parameters)
     {
+        List<Services.ValuesAtMinute> valuesAtMinutes = await eventService.GetValuesAtMinutes(parameters.From, parameters.To);
 
+        List<ResponseObjects.ValuesAtMinute> response = valuesAtMinutes.Select(v => mapper.Map<ResponseObjects.ValuesAtMinute>(v)).ToList();
+
+        return Ok(response);
     }
 
     [HttpPost("Event")]
