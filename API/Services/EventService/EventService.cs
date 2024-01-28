@@ -33,17 +33,16 @@ public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEvent
 
     private List<ValuesAtMinute> GetValuesByMinute(IQueryable<Event> events)
     {
-        DateTime minuteStart = new DateTime();
-
-        List<ValuesAtMinute> result = new List<ValuesAtMinute>();
-
-        ValuesAtMinute valuesAtMinute = new ValuesAtMinute();
         Event? firstEvent = events.FirstOrDefault();
 
         if (firstEvent is null)
         {
             return new List<ValuesAtMinute>();
         }
+
+        DateTime minuteStart = new DateTime();
+        List<ValuesAtMinute> result = new List<ValuesAtMinute>();
+        ValuesAtMinute valuesAtMinute = new ValuesAtMinute();
 
         valuesAtMinute.ParticularMinute = new DateTime(firstEvent.CreateDateTime.Year, firstEvent.CreateDateTime.Month, firstEvent.CreateDateTime.Day, firstEvent.CreateDateTime.Hour, firstEvent.CreateDateTime.Minute, 0);
 
