@@ -17,18 +17,71 @@ public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEvent
         if (to is not null)
         {
             IQueryable<Event> eventsInRange = events.Where(e => e.CreateDateTime >= from && e.CreateDateTime <= to);
-            //TODO:Div range by minutes
-            //TODO:Return List<ValuesAtMinute>
+
+            return GetValuesByMinute(eventsInRange);
         }
 
         IQueryable<Event> eventsFrom = events.Where(e => e.CreateDateTime >= from);
-        //TODO:Div range by minutes
-        //TODO:Return List<ValuesAtMinute>
-        return new List<ValuesAtMinute>();
+
+        return GetValuesByMinute(eventsFrom);
     }
 
     public async Task<Event> Create(Event @event)
     {
         return await eventRepository.Create(@event);
+    }
+
+    private List<ValuesAtMinute> GetValuesByMinute(IQueryable<Event> events)
+    {
+        DateTime minuteStart = new DateTime();
+
+        List<ValuesAtMinute> result = new List<ValuesAtMinute>();
+
+        ValuesAtMinute valuesAtMinute = new ValuesAtMinute();
+        Event? firstEvent = events.FirstOrDefault();
+
+        if (firstEvent is null)
+        {
+            return new List<ValuesAtMinute>();
+        }
+
+        valuesAtMinute.ParticularMinute = new DateTime(firstEvent.CreateDateTime.Year, firstEvent.CreateDateTime.Month, firstEvent.CreateDateTime.Day, firstEvent.CreateDateTime.Hour, firstEvent.CreateDateTime.Minute, 0);
+
+        foreach (var @event in events)
+        {
+            DateTime eventMinuteStart = new DateTime(@event.CreateDateTime.Year, @event.CreateDateTime.Month, @event.CreateDateTime.Day, @event.CreateDateTime.Hour, @event.CreateDateTime.Minute, 0);
+
+            if (valuesAtMinute.ParticularMinute != eventMinuteStart)
+            {
+                result.Add(new ValuesAtMinute()
+                {
+                    ParticularMinute = valuesAtMinute.ParticularMinute,
+                    Values = valuesAtMinute.Values
+                });
+
+                valuesAtMinute.ParticularMinute = new DateTime();
+                valuesAtMinute.Values = 0;
+            }
+
+            if (eventMinuteStart != minuteStart)
+            {
+                minuteStart = new DateTime(@event.CreateDateTime.Year, @event.CreateDateTime.Month, @event.CreateDateTime.Day, @event.CreateDateTime.Hour, @event.CreateDateTime.Minute, 0);
+
+                valuesAtMinute.ParticularMinute = minuteStart;
+                valuesAtMinute.Values = @event.Value;
+            }
+            else
+            {
+                valuesAtMinute.Values += @event.Value;
+            }
+        }
+
+        result.Add(new ValuesAtMinute()
+        {
+            ParticularMinute = valuesAtMinute.ParticularMinute,
+            Values = valuesAtMinute.Values
+        });
+
+        return result;
     }
 }
