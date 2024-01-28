@@ -2,6 +2,6 @@ namespace ResponseObjects;
 
 public class ValuesAtMinute
 {
-    public required DateTime DateTime { get; set; }
-    public required int ValuesNumber { get; set; }
+    public required DateTime ParticularMinute { get; set; }
+    public required int Values { get; set; }
 }
