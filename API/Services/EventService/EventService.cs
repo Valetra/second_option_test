@@ -11,7 +11,7 @@ public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEvent
 
         if (!events.Any())
         {
-            return new List<ValuesAtMinute>();
+            return [];
         }
 
         if (from is not null && to is null)
@@ -43,56 +43,17 @@ public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEvent
         return await eventRepository.Create(@event);
     }
 
-    private List<ValuesAtMinute> GetValuesByMinute(IQueryable<Event> events)
+    private static List<ValuesAtMinute> GetValuesByMinute(IQueryable<Event> events)
     {
-        Event? firstEvent = events.FirstOrDefault();
+        TimeSpan interval = new(0, 1, 0);
+        List<Event> eventsList = events.ToList();
 
-        if (firstEvent is null)
-        {
-            return new List<ValuesAtMinute>();
-        }
-
-        DateTime minuteStart = new DateTime();
-        List<ValuesAtMinute> result = new List<ValuesAtMinute>();
-        ValuesAtMinute valuesAtMinute = new ValuesAtMinute();
-
-        valuesAtMinute.ParticularMinute = new DateTime(firstEvent.CreateDateTime.Year, firstEvent.CreateDateTime.Month, firstEvent.CreateDateTime.Day, firstEvent.CreateDateTime.Hour, firstEvent.CreateDateTime.Minute, 0);
-
-        foreach (var @event in events)
-        {
-            DateTime eventMinuteStart = new DateTime(@event.CreateDateTime.Year, @event.CreateDateTime.Month, @event.CreateDateTime.Day, @event.CreateDateTime.Hour, @event.CreateDateTime.Minute, 0);
-
-            if (valuesAtMinute.ParticularMinute != eventMinuteStart)
+        return eventsList
+            .GroupBy(e => e.CreateDateTime.Ticks / interval.Ticks)
+            .Select(s => new ValuesAtMinute()
             {
-                result.Add(new ValuesAtMinute()
-                {
-                    ParticularMinute = valuesAtMinute.ParticularMinute,
-                    TotalValue = valuesAtMinute.TotalValue
-                });
-
-                valuesAtMinute.ParticularMinute = new DateTime();
-                valuesAtMinute.TotalValue = 0;
-            }
-
-            if (eventMinuteStart != minuteStart)
-            {
-                minuteStart = new DateTime(@event.CreateDateTime.Year, @event.CreateDateTime.Month, @event.CreateDateTime.Day, @event.CreateDateTime.Hour, @event.CreateDateTime.Minute, 0);
-
-                valuesAtMinute.ParticularMinute = minuteStart;
-                valuesAtMinute.TotalValue = @event.Value;
-            }
-            else
-            {
-                valuesAtMinute.TotalValue += @event.Value;
-            }
-        }
-
-        result.Add(new ValuesAtMinute()
-        {
-            ParticularMinute = valuesAtMinute.ParticularMinute,
-            TotalValue = valuesAtMinute.TotalValue
-        });
-
-        return result;
+                ParticularMinute = new DateTime(s.Key * interval.Ticks),
+                TotalValue = s.Sum(x => x.Value)
+            }).ToList();
     }
 }
