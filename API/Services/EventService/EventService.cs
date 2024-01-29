@@ -16,23 +16,16 @@ public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEvent
 
         if (from is not null && to is null)
         {
-            IQueryable<Event> eventsFrom = events.Where(e => e.CreateDateTime >= from);
-
-            return GetValuesByMinute(eventsFrom);
+            events = events.Where(e => e.CreateDateTime >= from);
         }
 
         if (from is null && to is not null)
         {
-            IQueryable<Event> eventsTo = events.Where(e => e.CreateDateTime <= to);
-
-            return GetValuesByMinute(eventsTo);
+            events = events.Where(e => e.CreateDateTime <= to);
         }
-
         if (from is not null && to is not null)
         {
-            IQueryable<Event> eventsInRange = events.Where(e => e.CreateDateTime >= from && e.CreateDateTime <= to);
-
-            return GetValuesByMinute(eventsInRange);
+            events = events.Where(e => e.CreateDateTime >= from && e.CreateDateTime <= to);
         }
 
         return GetValuesByMinute(events);
