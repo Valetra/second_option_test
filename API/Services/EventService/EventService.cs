@@ -14,18 +14,14 @@ public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEvent
             return [];
         }
 
-        if (from is not null && to is null)
+        if (from is not null)
         {
             events = events.Where(e => e.CreateDateTime >= from);
         }
 
-        if (from is null && to is not null)
+        if (to is not null)
         {
             events = events.Where(e => e.CreateDateTime <= to);
-        }
-        if (from is not null && to is not null)
-        {
-            events = events.Where(e => e.CreateDateTime >= from && e.CreateDateTime <= to);
         }
 
         return GetValuesByMinute(events);
