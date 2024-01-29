@@ -5,7 +5,7 @@ namespace Services;
 
 public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEventService
 {
-    public async Task<List<ValuesAtMinute>> GetValuesAtMinutes(DateTime from, DateTime? to)
+    public async Task<List<ValuesAtMinute>> GetValuesAtMinutes(DateTime? from, DateTime? to)
     {
         IQueryable<Event> events = eventRepository.GetAllQuery();
 
@@ -14,16 +14,28 @@ public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEvent
             return new List<ValuesAtMinute>();
         }
 
-        if (to is not null)
+        if (from is not null && to is null)
+        {
+            IQueryable<Event> eventsFrom = events.Where(e => e.CreateDateTime >= from);
+
+            return GetValuesByMinute(eventsFrom);
+        }
+
+        if (from is null && to is not null)
+        {
+            IQueryable<Event> eventsTo = events.Where(e => e.CreateDateTime <= to);
+
+            return GetValuesByMinute(eventsTo);
+        }
+
+        if (from is not null && to is not null)
         {
             IQueryable<Event> eventsInRange = events.Where(e => e.CreateDateTime >= from && e.CreateDateTime <= to);
 
             return GetValuesByMinute(eventsInRange);
         }
 
-        IQueryable<Event> eventsFrom = events.Where(e => e.CreateDateTime >= from);
-
-        return GetValuesByMinute(eventsFrom);
+        return GetValuesByMinute(events);
     }
 
     public async Task<Event> Create(Event @event)
