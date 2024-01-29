@@ -67,11 +67,11 @@ public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEvent
                 result.Add(new ValuesAtMinute()
                 {
                     ParticularMinute = valuesAtMinute.ParticularMinute,
-                    Values = valuesAtMinute.Values
+                    TotalValue = valuesAtMinute.TotalValue
                 });
 
                 valuesAtMinute.ParticularMinute = new DateTime();
-                valuesAtMinute.Values = 0;
+                valuesAtMinute.TotalValue = 0;
             }
 
             if (eventMinuteStart != minuteStart)
@@ -79,18 +79,18 @@ public class EventService(IBaseRepository<Event, Guid> eventRepository) : IEvent
                 minuteStart = new DateTime(@event.CreateDateTime.Year, @event.CreateDateTime.Month, @event.CreateDateTime.Day, @event.CreateDateTime.Hour, @event.CreateDateTime.Minute, 0);
 
                 valuesAtMinute.ParticularMinute = minuteStart;
-                valuesAtMinute.Values = @event.Value;
+                valuesAtMinute.TotalValue = @event.Value;
             }
             else
             {
-                valuesAtMinute.Values += @event.Value;
+                valuesAtMinute.TotalValue += @event.Value;
             }
         }
 
         result.Add(new ValuesAtMinute()
         {
             ParticularMinute = valuesAtMinute.ParticularMinute,
-            Values = valuesAtMinute.Values
+            TotalValue = valuesAtMinute.TotalValue
         });
 
         return result;
