@@ -233,4 +233,47 @@ public class UnitTest
 
         Assert.True(EqualsByItemsProperties(methodResult, expectedResult));
     }
+
+    [Fact]
+    public async void GetValuesAtMinutesTestWithFromAndToArguments()
+    {
+        Event[] testEvents =
+        [
+            new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f11"), Name = "Event 1", Value = 5, CreateDateTime = new DateTime(2022, 6, 5, 14, 14, 00) },
+            new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f11"), Name = "Event 2", Value = 5, CreateDateTime = new DateTime(2022, 8, 10, 14, 14, 45) },
+            //from (2022, 10, 23, 14, 15, 9)
+            //(2022, 10, 23, 14, 15, 13) - 5
+            new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f12"), Name = "Event 3", Value = 5, CreateDateTime = new DateTime(2022, 10, 23, 14, 15, 13) },
+            //(2022, 11, 10, 14, 15, 00) - 10
+            new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f13"), Name = "Event 4", Value = 5, CreateDateTime = new DateTime(2022, 11, 10, 14, 15, 22) },
+            new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f14"), Name = "Event 5", Value = 5, CreateDateTime = new DateTime(2022, 11, 10, 14, 15, 47) },
+            //(2034, 12, 2, 14, 16, 00) - 10
+            new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f16"), Name = "Event 7", Value = 5, CreateDateTime = new DateTime(2034, 12, 2, 14, 16, 08) },
+            new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f16"), Name = "Event 7", Value = 5, CreateDateTime = new DateTime(2034, 12, 2, 14, 16, 25) },
+            //to (2034, 12, 2, 14, 16, 26)
+            new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f15"), Name = "Event 6", Value = 5, CreateDateTime = new DateTime(2034, 12, 2, 14, 16, 48) },
+            new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f16"), Name = "Event 8", Value = 5, CreateDateTime = new DateTime(2323, 12, 2, 14, 15, 59) }
+        ];
+
+        EventService eventService = new(new InMemoryRepository());
+
+        foreach (var @event in testEvents)
+        {
+            await eventService.Create(@event);
+        }
+
+        DateTime from = new(2022, 10, 23, 14, 15, 9);
+        DateTime to = new(2034, 12, 2, 14, 16, 26);
+
+        List<ValuesAtMinute> methodResult = await eventService.GetValuesAtMinutes(from, to);
+
+        List<ValuesAtMinute> expectedResult =
+        [
+           new ValuesAtMinute() {ParticularMinute = new DateTime(2022, 10, 23, 14, 15, 00)  , TotalValue = 5},
+           new ValuesAtMinute() {ParticularMinute = new DateTime(2022, 11, 10, 14, 15, 00), TotalValue = 10},
+           new ValuesAtMinute() {ParticularMinute = new DateTime(2034, 12, 2, 14, 16, 00) , TotalValue = 10}
+        ];
+
+        Assert.True(EqualsByItemsProperties(methodResult, expectedResult));
+    }
 }
