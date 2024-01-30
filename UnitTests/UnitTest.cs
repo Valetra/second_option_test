@@ -27,12 +27,12 @@ public class UnitTest
 
     public class InMemoryRepository : IBaseRepository<Event, Guid>
     {
-        private readonly List<Event> _entities = [];
+        public readonly List<Event> entities = [];
 
-        public IQueryable<Event> GetAllQuery() => _entities.AsQueryable();
+        public IQueryable<Event> GetAllQuery() => entities.AsQueryable();
         public Task<Event> Create(Event model)
         {
-            _entities.Add(model);
+            entities.Add(model);
 
             return Task.FromResult(model);
         }
@@ -51,15 +51,18 @@ public class UnitTest
     [InlineData("14d10317-9f29-4cc8-bd76-4ba0806d3f11", "Event 1", 5, "2022/1/10 12:00:00")]
     public async void CreateTest(string id, string name, int value, string dateTime)
     {
-        EventService eventService = new(new InMemoryRepository());
+        InMemoryRepository inMemoryRepository = new();
+        EventService eventService = new(inMemoryRepository);
 
         Guid passedGuid = new(id);
         DateTime passedDateTime = DateTime.Parse(dateTime);
 
         Event passedEvent = new() { Id = passedGuid, Name = name, Value = value, CreateDateTime = passedDateTime };
-        Event createdEvent = await eventService.Create(passedEvent);
+        await eventService.Create(passedEvent);
 
-        Assert.True(createdEvent == passedEvent);
+        List<Event> events = inMemoryRepository.entities;
+
+        Assert.True(events.FirstOrDefault(passedEvent) == passedEvent);
     }
 
     [Fact]
