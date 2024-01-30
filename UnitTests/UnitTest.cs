@@ -155,7 +155,7 @@ public class UnitTest
             new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f11"), Name = "Event 1", Value = 5, CreateDateTime = new DateTime(2022, 6, 5, 14, 14, 00) },
             new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f11"), Name = "Event 2", Value = 5, CreateDateTime = new DateTime(2022, 8, 10, 14, 14, 45) },
             new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f12"), Name = "Event 3", Value = 5, CreateDateTime = new DateTime(2022, 10, 23, 14, 15, 13) },
-            //from start (2022, 11, 10, 14, 15, 15)
+            //from (2022, 11, 10, 14, 15, 15)
             //(2022, 11, 10, 14, 15, 00)
             new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f13"), Name = "Event 4", Value = 5, CreateDateTime = new DateTime(2022, 11, 10, 14, 15, 22) },
             new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f14"), Name = "Event 5", Value = 5, CreateDateTime = new DateTime(2022, 11, 10, 14, 15, 47) },
@@ -205,7 +205,7 @@ public class UnitTest
             //(2034, 12, 2, 14, 16, 00) - 10
             new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f16"), Name = "Event 7", Value = 5, CreateDateTime = new DateTime(2034, 12, 2, 14, 16, 08) },
             new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f16"), Name = "Event 7", Value = 5, CreateDateTime = new DateTime(2034, 12, 2, 14, 16, 25) },
-            //to end (2034, 12, 2, 14, 16, 26)
+            //to (2034, 12, 2, 14, 16, 26)
             new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f15"), Name = "Event 6", Value = 5, CreateDateTime = new DateTime(2034, 12, 2, 14, 16, 48) },
             //(2323, 12, 2, 14, 15, 00)
             new() { Id = new Guid("14d10317-9f29-4cc8-bd76-4ba0806d3f16"), Name = "Event 8", Value = 5, CreateDateTime = new DateTime(2323, 12, 2, 14, 15, 59) }
