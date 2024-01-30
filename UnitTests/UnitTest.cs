@@ -5,7 +5,7 @@ using System.Data;
 
 namespace UnitTests;
 
-public class UnitTest1
+public class UnitTest
 {
     bool EqualsByProperties(ValuesAtMinute lhs, ValuesAtMinute rhs)
     {
